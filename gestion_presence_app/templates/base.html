@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tableau de bord Professeur</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Gestion des présences - Tableau de bord</h1>
+    </header>
+
+    <div class="container">
+      <h2>Enregistrer une absence</h2>
+      <form method="POST" action="{{ url_for('prof.dashboard') }}">
+        <label for="id_etudiant">ID Étudiant</label>
+        <input type="text" name="id_etudiant" required />
+
+        <label for="nom_cours">Nom du cours</label>
+        <input type="text" name="nom_cours" required />
+
+        <label for="date_absence">Date</label>
+        <input type="date" name="date_absence" required />
+
+        <label for="motif">Motif</label>
+        <input type="text" name="motif" />
+
+        <button type="submit">Ajouter</button>
+      </form>
+
+      <h2>Liste des absences</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID Étudiant</th>
+            <th>Cours</th>
+            <th>Date</th>
+            <th>Motif</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for absence in absences %}
+          <tr>
+            <td>{{ absence.id_etudiant }}</td>
+            <td>{{ absence.nom_cours }}</td>
+            <td>{{ absence.date_absence }}</td>
+            <td>{{ absence.motif or "N/A" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {% block title %}Tableau Professeur{% endblock %} {%
+block content %}
+<h2>Tableau de bord - Professeur</h2>
+<form method="POST">
+  <input
+    type="text"
+    name="id_etudiant"
+    placeholder="ID Étudiant"
+    required
+  /><br />
+  <input
+    type="text"
+    name="nom_cours"
+    placeholder="Nom du cours"
+    required
+  /><br />
+  <input type="date" name="date" required /><br />
+  <input type="text" name="motif" placeholder="Motif d'absence" /><br />
+  <button type="submit">Ajouter Absence</button>
+</form>
+{% endblock %}

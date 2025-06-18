@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Connexion Étudiant</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Connexion Étudiant</h1>
+    </header>
+    <div class="container">
+      <form method="POST">
+        <label for="matricule">Matricule</label>
+        <input type="text" name="matricule" required />
+
+        <label for="mot_de_passe">Mot de passe</label>
+        <input type="password" name="mot_de_passe" required />
+
+        <button type="submit">Se connecter</button>
+      </form>
+    </div>
+  </body>
+</html>

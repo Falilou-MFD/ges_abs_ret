@@ -1,0 +1,22 @@
+{% extends 'base.html' %} {% block title %}Tableau Étudiant{% endblock %} {%
+block content %}
+<h2>Tableau de bord - Étudiant</h2>
+<h3>Absences :</h3>
+<ul>
+  {% for absence in absences %}
+  <li>
+    {{ absence.nom_cours }} - {{ absence.date_absence }} : {{ absence.motif }}
+  </li>
+  {% endfor %}
+</ul>
+
+<h3>Retards :</h3>
+<ul>
+  {% for retard in retards %}
+  <li>
+    {{ retard.nom_cours }} - {{ retard.date_retard }} : {{ retard.duree_minutes
+    }} min
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}
