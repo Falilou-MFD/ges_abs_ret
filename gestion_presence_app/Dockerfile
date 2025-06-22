@@ -1,19 +1,23 @@
-FROM python:3.12-slim
+# Utiliser Python 3.12
+FROM python:3.11-slim
 
+# Ne pas créer de fichiers .pyc
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Définir le dossier de travail
 WORKDIR /app
 
+# Copier les dépendances et installer
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
+# Copier tout le projet
 COPY . .
 
-RUN python run.py collectstatic --noinput || true
+# Exposer le port Flask
+EXPOSE 5000
 
-EXPOSE 8000
-
-CMD ["python", "run.py", "runserver", "0.0.0.0:8000"]
-# This Dockerfile sets up a Python environment for a Django application, installs dependencies, collects static files, and runs the server.
+# Lancer l'application Flask
+CMD ["python", "app.py"]
