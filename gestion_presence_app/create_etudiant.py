@@ -1,5 +1,5 @@
-from app import app, db
-from models import Etudiant
+from app import app #, db
+from models import Etudiant, db
 
 # Crée un étudiant selon la structure de ta base
 with app.app_context():
