@@ -71,8 +71,8 @@ Cela va :
 
 ## 🔁 Commandes utiles
 
-| Commande Docker                  | Description                                 |
-|----------------------------------|---------------------------------------------|
+| Commande Docker                  | Description                                |
+|----------------------------------|--------------------------------------------|
 | `docker-compose up --build`     | Construction et démarrage du service        |
 | `docker-compose down`           | Arrêt et suppression des conteneurs         |
 | `docker-compose logs`           | Affichage des logs du backend               |
@@ -119,8 +119,6 @@ cd ges_abs_ret/gestion_presence_app
 ```
 
 Lancer un environnemnet virtuel et telecharger les requirements
-
-
 
 ### Vérifier les fichiers `Dockerfile` et `docker-compose.yml`
 
