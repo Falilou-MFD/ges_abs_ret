@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'Windows' // Assure-toi que ce nom correspond bien au nom du node Windows
-    }
+    agent any
 
     environment {
         DOCKER_USERNAME = "koji2112"
@@ -20,14 +18,14 @@ pipeline {
         stage("Test") {
             steps {
                 echo "Tests en cours"
-                // Tu peux ajouter ici des scripts .bat ou des commandes Windows
+                // Ajouter ici des scripts de test selon le type d'environnement
             }
         }
 
         stage("Build Docker Image") {
             steps {
                 script {
-                    bat "docker build -t %DOCKER_IMAGE% ."
+                    sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
@@ -36,10 +34,10 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'koji2112', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        bat """
-                        echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USER% --password-stdin
-                        echo Docker login successful
-                        docker push %DOCKER_IMAGE%
+                        sh """
+                            echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USER}" --password-stdin
+                            echo "Docker login successful"
+                            docker push ${DOCKER_IMAGE}
                         """
                     }
                 }
@@ -49,10 +47,10 @@ pipeline {
         stage("Deploy") {
             steps {
                 script {
-                    bat """
-                    docker container stop %DOCKER_CONTAINER% || exit 0
-                    docker container rm %DOCKER_CONTAINER% || exit 0
-                    docker run -d --name %DOCKER_CONTAINER% -p 8080:80 %DOCKER_IMAGE%
+                    sh """
+                        docker container stop ${DOCKER_CONTAINER} || true
+                        docker container rm ${DOCKER_CONTAINER} || true
+                        docker run -d --name ${DOCKER_CONTAINER} -p 8080:80 ${DOCKER_IMAGE}
                     """
                 }
             }
@@ -61,13 +59,13 @@ pipeline {
 
     post {
         success {
-            mail to: 'mancabouben12@gmail.com , falilou1999@gmail.com,maimounasow1410@gmail.com,kubuyaphilemon4@gmail.com,robinyonli2@gmail.com',
+            mail to: 'mancabouben12@gmail.com, falilou1999@gmail.com, maimounasow1410@gmail.com, kubuyaphilemon4@gmail.com, robinyonli2@gmail.com',
                  subject: "✅ Succès du pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Le pipeline a été exécuté avec succès.\nVoir les détails ici : ${env.BUILD_URL}"
         }
 
         failure {
-            mail to: 'mancabouben12@gmail.com , falilou1999@gmail.com,maimounasow1410@gmail.com,kubuyaphilemon4@gmail.com,robinyonli2@gmail.com',
+            mail to: 'mancabouben12@gmail.com, falilou1999@gmail.com, maimounasow1410@gmail.com, kubuyaphilemon4@gmail.com, robinyonli2@gmail.com',
                  subject: "❌ Échec du pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Le pipeline a échoué.\nVoir les logs ici : ${env.BUILD_URL}"
         }
