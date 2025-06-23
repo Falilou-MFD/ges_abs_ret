@@ -64,7 +64,7 @@ pipeline {
         }
 
         failure {
-            mail to: 'destinataire@example.com',
+            mail to: 'falilou1999@gmail.com , maimounasow1410@gmail.com , kubuyaphilemon4@gmail.com , robinyonli2@gmail.com',
                  subject: "❌ Échec du pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Le pipeline a échoué.\nVoir les logs ici : ${env.BUILD_URL}"
         }
