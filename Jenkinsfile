@@ -1,34 +1,26 @@
-// Déclaration du pipeline Jenkins
 pipeline {
-    // Exécute le pipeline sur n'importe quel agent
-    agent {
-        label "Windows"
+    agent any
 
-    }
-        
-    
-    // Déclarer les variables d'environnement globales
     environment {
-        DOCKER_USERNAME = "koji2112" // username docker
-        IMAGE_VERSION = "1.${BUILD_NUMBER}"  // version dynamique de l’image
-        DOCKER_IMAGE = "${DOCKER_USERNAME}/tp-app:${IMAGE_VERSION}" // nom de l’image docker
-        DOCKER_CONTAINER = "jenkins"  // nom du conteneur
+        DOCKER_USERNAME = "koji2112"
+        IMAGE_VERSION = "1.${BUILD_NUMBER}"
+        DOCKER_IMAGE = "${DOCKER_USERNAME}/tp-app:${IMAGE_VERSION}"
+        DOCKER_CONTAINER = "jenkins"
     }
-    // Les étapes du pipeline
+
     stages {
-        // Étape 1 : Récupération du code source depuis GitHub
         stage("Checkout") {
             steps {
                 git branch: 'jenkins_koji', url: 'https://github.com/Falilou-MFD/ges_abs_ret.git'
             }
         }
-        // Étape 2 : Exécution des tests
+
         stage("Test") {
             steps {
                 echo "Tests en cours"
             }
         }
-        // Étape 3 : Création de l'image Docker
+
         stage("Build Docker Image") {
             steps {
                 script {
@@ -36,34 +28,49 @@ pipeline {
                 }
             }
         }
-        // Étape 4 : Publication de l'image sur Docker Hub
+
         stage("Push image to Docker Hub") {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'koji2112', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]){
-                    bat """
-                    docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-                    echo 'Docker login successful'
-                    docker push $DOCKER_IMAGE
-                    """
+                    withCredentials([usernamePassword(credentialsId: 'koji2112', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        bat """
+                        docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
+                        echo 'Docker login successful'
+                        docker push $DOCKER_IMAGE
+                        """
                     }
                 }
             }
         }
-        // Étape 5 : Déploiement de l'application
+
         stage("Deploy") {
             steps {
                 script {
                     bat """
-                    # Arrête le conteneur s'il existe
                     docker container stop $DOCKER_CONTAINER || true
-                    # supprime le conteneur s'il existe
                     docker container rm $DOCKER_CONTAINER || true
-                    # Lance un nouveau conteneur en mode détaché(en arrière-plan )
                     docker container run -d --name $DOCKER_CONTAINER -p 8080:80 $DOCKER_IMAGE
                     """
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            mail to: 'falilou1999@gmail.com , maimounasow1410@gmail.com , kubuyaphilemon4@gmail.com , robinyonli2@gmail.com',
+                 subject: "✅ Succès du pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Le pipeline a été exécuté avec succès.\nVoir les détails ici : ${env.BUILD_URL}"
+        }
+
+        failure {
+            mail to: 'destinataire@example.com',
+                 subject: "❌ Échec du pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Le pipeline a échoué.\nVoir les logs ici : ${env.BUILD_URL}"
+        }
+
+        always {
+            echo 'Notification e-mail envoyée.'
         }
     }
 }
