@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'Windows' // Assure-toi que ce nom correspond bien au nom du node Windows
+    }
 
     environment {
         DOCKER_USERNAME = "koji2112"
@@ -18,14 +20,14 @@ pipeline {
         stage("Test") {
             steps {
                 echo "Tests en cours"
-                // Ajoute ici des tests si besoin
+                // Tu peux ajouter ici des scripts .bat ou des commandes Windows
             }
         }
 
         stage("Build Docker Image") {
             steps {
                 script {
-                    sh "docker build -t $DOCKER_IMAGE ."
+                    bat "docker build -t %DOCKER_IMAGE% ."
                 }
             }
         }
@@ -34,10 +36,10 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'koji2112', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh """
-                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
-                            echo 'Docker login successful'
-                            docker push $DOCKER_IMAGE
+                        bat """
+                        echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USER% --password-stdin
+                        echo Docker login successful
+                        docker push %DOCKER_IMAGE%
                         """
                     }
                 }
@@ -47,10 +49,10 @@ pipeline {
         stage("Deploy") {
             steps {
                 script {
-                    sh """
-                        docker container stop $DOCKER_CONTAINER || true
-                        docker container rm $DOCKER_CONTAINER || true
-                        docker run -d --name $DOCKER_CONTAINER -p 8080:80 $DOCKER_IMAGE
+                    bat """
+                    docker container stop %DOCKER_CONTAINER% || exit 0
+                    docker container rm %DOCKER_CONTAINER% || exit 0
+                    docker run -d --name %DOCKER_CONTAINER% -p 8080:80 %DOCKER_IMAGE%
                     """
                 }
             }
