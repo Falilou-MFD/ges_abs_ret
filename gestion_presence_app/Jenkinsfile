@@ -5,7 +5,8 @@ pipeline {
     environment {
         DOCKER_USERNAME = "faliloumfd"
         IMAGE_VERSION = "1.${BUILD_NUMBER}"
-        DOCKER_IMAGE = "${DOCKER_USERNAME}/gestion_presence_app:${IMAGE_VERSION}"
+        // DOCKER_IMAGE = "${DOCKER_USERNAME}/gestion_presence_app:${IMAGE_VERSION}"
+        DOCKER_IMAGE = "faliloumfd/gestion_presence_app:latest" // Nom de l'image Docker
         DOCKER_CONTAINER = "gestion_presence_app"
     }
 
